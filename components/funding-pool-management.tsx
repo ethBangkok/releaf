@@ -1,29 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useDepositTreasuryPool } from "@/app/utils/custom-contracts-calls";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartContainer } from "@/components/ui/chart";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
-import { ChartContainer } from "@/components/ui/chart";
-import { useAccount, useBalance, useChains } from "wagmi";
 import {
-  AMOUNT_TO_STAKE,
   AMOUNT_TO_STAKE_IN_ETH,
   deployedPoolContractAddress,
 } from "@/constants/config";
-import { useDepositTreasuryPool } from "@/app/utils/custom-contracts-calls";
-import { formatEther, parseEther } from "viem";
+import { useState } from "react";
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { useBalance, useChains } from "wagmi";
 
 export function FundingPoolManagementComponent() {
   const [amount, setAmount] = useState("");
@@ -41,7 +32,6 @@ export function FundingPoolManagementComponent() {
   });
 
   const chains = useChains();
-  console.log("chains", chains);
 
   const balance = useBalance({
     address: deployedPoolContractAddress,
@@ -49,7 +39,6 @@ export function FundingPoolManagementComponent() {
       select: (data) => Number(String(data.value)),
     },
   });
-  console.log("balance", balance);
 
   const totalBalance = 100000;
   const availableBalance = balance?.data;
