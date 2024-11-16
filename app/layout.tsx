@@ -21,7 +21,7 @@ export default function RootLayout({
         <SubgraphProvider
         subgraphClient={
           new Client({
-            url: 'https://api.thegraph.com/subgraphs/name/ethbangkok/ethbangkok',
+            url: 'https://api.studio.thegraph.com/query/42205/eth-bangkok/version/latest',
             exchanges: [cacheExchange, fetchExchange]
           })
         }

@@ -1,7 +1,7 @@
 import {
   FundAdded as FundAddedEvent,
   FunderAdded as FunderAddedEvent
-} from "../generated/FundRaiser/FundRaiser"
+} from "../generated/FundPool/FundPool"
 import { FundAdded, FunderAdded } from "../generated/schema"
 
 export function handleFundAdded(event: FundAddedEvent): void {
