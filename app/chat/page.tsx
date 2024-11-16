@@ -85,7 +85,7 @@ export default function PushChat() {
       setIsLoading(true);
       const chatHistory = await PushAPI.chat.history({
         account: walletAddress,
-        threadhash: ,
+        threadhash: "",
         toDecrypt: true,
         pgpPrivateKey,
         env: ENV.STAGING,
@@ -158,7 +158,7 @@ export default function PushChat() {
           <Button
             variant='ghost'
             size='sm'
-            onClick={() => window.location.go("/dashboard")}>
+            onClick={() => window.location.replace("/dashboard")}>
             Back to Home
           </Button>
           <span className='text-xl font-bold'>Push Chat</span>
