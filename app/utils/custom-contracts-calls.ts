@@ -1,6 +1,7 @@
 import { deployedPoolContractAddress } from "@/constants/config";
 import {
   useReadFundPoolTreasurer,
+  useWriteFundPoolAddBeneficiary,
   useWriteFundPoolDepositFund,
 } from "@/hooks/generated-contracts/fund-pool";
 import { formatEther } from "viem";

@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { PlusCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,7 +17,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { deployedPoolContractAddress } from "@/constants/config";
+import {
+  useReadFundPoolBeneficiaries,
+  useWriteFundPoolAddBeneficiary,
+} from "@/hooks/generated-contracts/fund-pool";
 import { useToast } from "@/hooks/use-toast";
+import { PlusCircle } from "lucide-react";
+import { useState } from "react";
 
 // Helper function to validate Ethereum addresses
 const isValidEthereumAddress = (address: string) => {
@@ -30,17 +35,29 @@ export default function BeneficiaryPage() {
   const [newBeneficiary, setNewBeneficiary] = useState("");
   const [beneficiaries, setBeneficiaries] = useState<string[]>([]);
   const { toast } = useToast();
+  const addBenefciary = useWriteFundPoolAddBeneficiary();
+  const beneficiariesL = useReadFundPoolBeneficiaries({
+    address: deployedPoolContractAddress,
+  });
+  console.log("beneficiaries", beneficiariesL);
 
-  const addBeneficiary = () => {
+  const handleAddBeneficiary = async () => {
     if (isValidEthereumAddress(newBeneficiary)) {
       if (!beneficiaries.includes(newBeneficiary)) {
-        setBeneficiaries([...beneficiaries, newBeneficiary]);
-        setNewBeneficiary("");
-        toast({
-          title: "Beneficiary added",
-          description:
-            "The new beneficiary has been successfully added to the list.",
-        });
+        addBenefciary
+          .writeContractAsync({
+            address: deployedPoolContractAddress,
+            args: [newBeneficiary as `0x${string}`],
+          })
+          .then((ben) => {
+            setBeneficiaries([...beneficiaries, newBeneficiary]);
+            setNewBeneficiary("");
+            toast({
+              title: "Beneficiary added",
+              description:
+                "The new beneficiary has been successfully added to the list.",
+            });
+          });
       } else {
         toast({
           title: "Duplicate address",
@@ -67,10 +84,10 @@ export default function BeneficiaryPage() {
   };
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-8">Beneficiary Management</h1>
+    <div className='container mx-auto py-10'>
+      <h1 className='text-3xl font-bold mb-8'>Beneficiary Management</h1>
 
-      <Card className="mb-8">
+      <Card className='mb-8'>
         <CardHeader>
           <CardTitle>Add New Beneficiary</CardTitle>
           <CardDescription>
@@ -81,18 +98,17 @@ export default function BeneficiaryPage() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              addBeneficiary();
+              handleAddBeneficiary();
             }}
-            className="flex space-x-2"
-          >
+            className='flex space-x-2'>
             <Input
-              placeholder="0x..."
+              placeholder='0x...'
               value={newBeneficiary}
               onChange={(e) => setNewBeneficiary(e.target.value)}
-              className="flex-grow"
+              className='flex-grow'
             />
-            <Button type="submit">
-              <PlusCircle className="mr-2 h-4 w-4" /> Add Beneficiary
+            <Button type='submit'>
+              <PlusCircle className='mr-2 h-4 w-4' /> Add Beneficiary
             </Button>
           </form>
         </CardContent>
@@ -111,28 +127,19 @@ export default function BeneficiaryPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Wallet Address</TableHead>
-                  <TableHead className="w-[100px]">Action</TableHead>
+                  <TableHead className='w-[100px]'>Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {beneficiaries.map((address, index) => (
                   <TableRow key={index}>
-                    <TableCell className="font-mono">{address}</TableCell>
-                    <TableCell>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeBeneficiary(address)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
+                    <TableCell className='font-mono'>{address}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           ) : (
-            <p className="text-center text-muted-foreground">
+            <p className='text-center text-muted-foreground'>
               No beneficiaries added yet.
             </p>
           )}
