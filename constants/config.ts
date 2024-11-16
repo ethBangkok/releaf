@@ -6,3 +6,6 @@ export const deployedPoolContractAddress = (process.env
 export const AMOUNT_TO_STAKE = parseGwei("1", "wei");
 
 export const AMOUNT_TO_STAKE_IN_ETH = formatEther(BigInt(AMOUNT_TO_STAKE));
+
+export const ADMIN_ADDRESS = (process.env.NEXT_PUBLIC_ADMIN_ADDRESS ||
+  "") as `0x${string}`;

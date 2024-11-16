@@ -1,9 +1,8 @@
+import { Toaster } from "@/components/ui/toaster";
+import { SubgraphProvider } from "@/providers/subgraph-provider";
+import WagmiCustomProvider from "@/providers/wagmi-provider";
 import type { Metadata } from "next";
 import "./globals.css";
-import WagmiCustomProvider from "@/providers/wagmi-provider";
-import { SubgraphProvider } from "@/providers/subgraph-provider";
-import { Client, cacheExchange, fetchExchange } from '@urql/core';
-
 
 export const metadata: Metadata = {
   title: "EthBangkok",
@@ -26,7 +25,8 @@ export default function RootLayout({
         //   })
         // }
         >
-        <body>{children}</body>
+          <body>{children}</body>
+          <Toaster />
         </SubgraphProvider>
       </WagmiCustomProvider>
     </html>
