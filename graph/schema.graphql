@@ -1,0 +1,17 @@
+type FundAdded @entity(immutable: true) {
+  id: Bytes!
+  funder: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type FunderAdded @entity(immutable: true) {
+  id: Bytes!
+  funder: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
