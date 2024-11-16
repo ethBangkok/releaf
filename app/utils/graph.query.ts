@@ -16,19 +16,31 @@ blockNumber
 blockTimestamp
 transactionHash
 }
-BeneficiaryAddeds{
+beneficiaryAddeds{
 id
 beneficiary
 blockNumber
 blockTimestamp
 transactionHash
 }
-FundsDistributeds{
+fundsDistributeds{
 id
 amount
 blockNumber
 blockTimestamp
 transactionHash
 }
+}
+`
+
+export const beneficiaryList = `query 
+beneficiaryList {
+  beneficiaryAddeds {
+    transactionHash
+    id
+    beneficiary
+    blockNumber
+    blockTimestamp
+  }
 }
 `

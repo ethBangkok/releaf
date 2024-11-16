@@ -15,7 +15,7 @@ type SubgraphProviderops = {
 };
 
 const subgraphClient = new Client({
-    url: 'https://api.studio.thegraph.com/query/42205/eth-bangkok/version/latest',
+    url: 'https://api.studio.thegraph.com/query/42205/eth-bangkok/v0.0.3',
     exchanges: [cacheExchange, fetchExchange]
 })
 
