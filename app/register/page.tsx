@@ -10,24 +10,42 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wallet } from "lucide-react";
-import { useState } from "react";
+import {
+  AMOUNT_TO_STAKE,
+  deployedPoolContractAddress,
+} from "@/constants/config";
+import { useWriteFundPoolRegisterTreasurer } from "@/hooks/generated-contracts/fund-pool";
+import { ConnectKitButton } from "connectkit";
+import {
+  useAccount,
+  useChainId,
+  useChains,
+  useConnect,
+  useWalletClient,
+} from "wagmi";
 
 export default function FunderRegistration() {
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
-  const [amount, setAmount] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-
-  const handleWalletConnect = () => {
-    // Simulating wallet connection
-    setIsWalletConnected(true);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const register = useWriteFundPoolRegisterTreasurer();
+  const wallet = useConnect();
+  console.log("wallet", wallet);
+  const account = useAccount();
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // wallet.connectAsync({
+    //   connector: {
+    // ) {
+    //       return parameters.provider.request({
+    //         method: "eth_requestAccounts",
+    //       });
+    //     },
+    //   },
+    // });
+    await register.writeContractAsync({
+      address: deployedPoolContractAddress,
+      args: [account.address as `0x${string}`],
+    });
     // Handle form submission here
-    console.log("Form submitted", { amount, name, email });
+    console.log("Form submitted");
   };
 
   return (
@@ -45,53 +63,24 @@ export default function FunderRegistration() {
           <form onSubmit={handleSubmit} className='space-y-6'>
             <div className='space-y-2'>
               <Label htmlFor='wallet'>Wallet Connection</Label>
-              <Button
-                type='button'
-                variant={isWalletConnected ? "outline" : "default"}
-                className='w-full'
-                onClick={handleWalletConnect}>
-                <Wallet className='mr-2 h-4 w-4' />
-                {isWalletConnected ? "Wallet Connected" : "Connect Wallet"}
-              </Button>
+
+              <ConnectKitButton />
             </div>
 
             <div className='space-y-2'>
-              <Label htmlFor='stake'>Amount to donate</Label>
+              <Label htmlFor='stake'>Amount to Stake (ETH)</Label>
               <Input
                 id='stake'
                 type='number'
-                placeholder='0.0'
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                placeholder={"$ " + AMOUNT_TO_STAKE.toString()}
+                value={AMOUNT_TO_STAKE}
+                disabled
+                // onChange={(e) => setAmount(e.target.value)}
                 required
               />
             </div>
 
-            <div className='space-y-2'>
-              <Label htmlFor='name'>Name (Optional)</Label>
-              <Input
-                id='name'
-                type='text'
-                placeholder='John Doe'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-
-            <div className='space-y-2'>
-              <Label htmlFor='email'>Email (Optional)</Label>
-              <Input
-                id='email'
-                type='email'
-                placeholder='john@example.com'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <Button
-              type='submit'
-              className='w-full'
-              disabled={!isWalletConnected}>
+            <Button type='submit' className='w-full'>
               Stake and Register
             </Button>
           </form>

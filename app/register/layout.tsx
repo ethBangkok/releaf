@@ -1,23 +1,21 @@
 "use client";
-import type { Metadata } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useAccount } from "wagmi";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const wallet = localStorage.getItem("wallet");
+  const account = useAccount();
   const router = useRouter();
 
-  useEffect(() => {
-    if (wallet) router.push("/dashboard");
-  }, [wallet]);
+  // useEffect(() => {
+  //   if (account.isConnected) {
+  //     router.push("/dashboard");
+  //   }
+  // }, [account.isConnected, router]);
 
-  return (
-    <html lang="en">
-      <body className={`antialiased`}>{children}</body>
-    </html>
-  );
+  return children;
 }
