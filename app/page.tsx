@@ -1,101 +1,164 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useState, useCallback } from "react";
+import { IProvider } from "@web3auth/base";
+import { Web3Auth } from "@web3auth/modal";
+import { PasskeysPlugin } from "@web3auth/passkeys-sfa-plugin";
+import {
+  initializeWeb3Auth,
+  initializePasskeysPlugin,
+} from "./web3-auth-initializer";
+import RPC from "./viemRPC";
+import { shouldSupportPasskey } from "@/lib/support-passkey";
+
+function App() {
+  const [provider, setProvider] = useState<IProvider | null>(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
+  const [passkeysPlugin, setPasskeysPlugin] = useState<PasskeysPlugin | null>(
+    null
+  );
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const web3authInstance = await initializeWeb3Auth();
+        setWeb3auth(web3authInstance);
+
+        await web3authInstance.initModal(); // Initialize modal before plugins
+        console.log("Web3Auth initialized successfully");
+
+        const passkeysInstance = await initializePasskeysPlugin(
+          web3authInstance
+        );
+        setPasskeysPlugin(passkeysInstance);
+
+        const supportPasskeys = shouldSupportPasskey();
+        console.log("Support Passkeys:", supportPasskeys);
+
+        if (web3authInstance.connected) setLoggedIn(true);
+      } catch (error) {
+        console.error("Error during initialization:", error);
+      }
+    };
+
+    init();
+  }, []);
+
+  // User Login
+  const login = useCallback(async () => {
+    try {
+      if (!web3auth) throw new Error("Web3Auth is not initialized");
+      const web3authProvider = await web3auth.connect();
+      setProvider(web3authProvider);
+      setLoggedIn(true);
+    } catch (error) {
+      console.error("Login Error:", error);
+    }
+  }, [web3auth]);
+
+  // User Logout
+  const logout = useCallback(async () => {
+    try {
+      if (!web3auth) throw new Error("Web3Auth is not initialized");
+      await web3auth.logout();
+      setProvider(null);
+      setLoggedIn(false);
+      uiConsole("logged out");
+    } catch (error) {
+      console.error("Logout Error:", error);
+    }
+  }, [web3auth]);
+
+  // Passkeys Functionality
+  const registerPasskey = useCallback(
+    async (username: string) => {
+      try {
+        if (!passkeysPlugin)
+          throw new Error("Passkeys Plugin not initialized.");
+        await passkeysPlugin.registerPasskey({ username });
+        console.log("Passkey registered successfully for:", username);
+      } catch (error) {
+        console.error("Error registering passkey:", error);
+      }
+    },
+    [passkeysPlugin]
+  );
+
+  const loginWithPasskey = useCallback(
+    async (authenticatorId: string) => {
+      try {
+        if (!passkeysPlugin)
+          throw new Error("Passkeys Plugin not initialized.");
+        const user = await passkeysPlugin.loginWithPasskey({
+          authenticatorId,
+        });
+        console.log("User logged in successfully with Passkey:", user);
+      } catch (error) {
+        console.error("Error logging in with passkey:", error);
+      }
+    },
+    [passkeysPlugin]
+  );
+
+  const listAllPasskeys = useCallback(async () => {
+    try {
+      if (!passkeysPlugin) throw new Error("Passkeys Plugin not initialized.");
+      const passkeys = await passkeysPlugin.listAllPasskeys();
+      console.log("Registered Passkeys:", passkeys);
+    } catch (error) {
+      console.error("Error listing passkeys:", error);
+    }
+  }, [passkeysPlugin]);
+
+  // Console for Logging UI Feedback
+  const uiConsole = (...args: any[]) => {
+    const el = document.querySelector("#console>p");
+    if (el) {
+      el.innerHTML = JSON.stringify(args || {}, null, 2);
+      console.log(...args);
+    }
+  };
+
+  const loggedInView = (
+    <>
+      <div className='flex-container'>
+        <button
+          onClick={() => registerPasskey("user@example.com")}
+          className='card'>
+          Register Passkey
+        </button>
+        <button
+          onClick={() => loginWithPasskey("authenticator_id")}
+          className='card'>
+          Login with Passkey
+        </button>
+        <button onClick={listAllPasskeys} className='card'>
+          List All Passkeys
+        </button>
+        <button onClick={logout} className='card'>
+          Log Out
+        </button>
+      </div>
+    </>
+  );
+
+  const unloggedInView = (
+    <button onClick={login} className='card'>
+      Login
+    </button>
+  );
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className='container'>
+      <h1 className='title'>Web3Auth & Passkeys Integration Example</h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      <div className='grid'>{loggedIn ? loggedInView : unloggedInView}</div>
+      <div id='console' style={{ whiteSpace: "pre-line" }}>
+        <p style={{ whiteSpace: "pre-line" }}></p>
+      </div>
     </div>
   );
 }
+
+export default App;
