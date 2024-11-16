@@ -40,7 +40,6 @@ export function FundingPoolManagementComponent() {
   });
 
   const chains = useChains();
-  console.log("chains", chains);
 
   const balance = useBalance({
     address: deployedPoolContractAddress,
@@ -48,7 +47,6 @@ export function FundingPoolManagementComponent() {
       select: (data) => Number(String(data.value)),
     },
   });
-  console.log("balance", balance);
 
   const totalBalance = 100000;
   const availableBalance = balance?.data;
@@ -88,33 +86,33 @@ export function FundingPoolManagementComponent() {
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
   return (
-    <div className='container mx-auto p-4 space-y-6'>
-      <header className='text-center mb-8'>
-        <h1 className='text-3xl font-bold mb-2'>Funding Pool Management</h1>
-        <p className='text-2xl font-semibold text-primary'>
+    <div className="container mx-auto p-4 space-y-6">
+      <header className="text-center mb-8">
+        <h1 className="text-3xl font-bold mb-2">Funding Pool Management</h1>
+        <p className="text-2xl font-semibold text-primary">
           Total Pool Balance: ${totalBalance.toLocaleString()}
         </p>
       </header>
 
-      <div className='grid gap-6 md:grid-cols-2'>
+      <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Add Funds</CardTitle>
           </CardHeader>
           <CardContent>
-            <form className='space-y-4' onSubmit={handleFundNow}>
-              <div className='space-y-2'>
-                <Label htmlFor='amount'>Amount to Fund</Label>
+            <form className="space-y-4" onSubmit={handleFundNow}>
+              <div className="space-y-2">
+                <Label htmlFor="amount">Amount to Fund</Label>
                 <Input
-                  id='amount'
-                  type='number'
-                  placeholder='Enter amount'
+                  id="amount"
+                  type="number"
+                  placeholder="Enter amount"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  aria-describedby='amount-error'
+                  aria-describedby="amount-error"
                 />
                 {error && (
-                  <p id='amount-error' className='text-sm text-red-500'>
+                  <p id="amount-error" className="text-sm text-red-500">
                     {error}
                   </p>
                 )}
@@ -145,9 +143,10 @@ export function FundingPoolManagementComponent() {
                 </AlertDescription>
               </Alert>
               <Button
-                className='w-full'
+                className="w-full"
                 type={"submit"}
-                onClick={handleFundNow}>
+                onClick={handleFundNow}
+              >
                 Fund Now
               </Button>
             </form>
@@ -157,36 +156,38 @@ export function FundingPoolManagementComponent() {
         <Card>
           <CardHeader>
             <CardTitle>
-              <h2 className='text-xl font-bold'>Funding Pool Stats</h2>
+              <h2 className="text-xl font-bold">Funding Pool Stats</h2>
               <Button
                 onClick={() => window.location.replace("/chat")}
-                className='text-sm'>
+                className="text-sm"
+              >
                 Chat with the Admin
               </Button>
             </CardTitle>
           </CardHeader>
-          <CardContent className='space-y-4'>
+          <CardContent className="space-y-4">
             <div>
-              <p className='mb-2'>Funding Progress</p>
+              <p className="mb-2">Funding Progress</p>
               <Progress value={(currentFunding / totalBalance) * 100} />
-              <p className='text-sm text-muted-foreground mt-1'>
+              <p className="text-sm text-muted-foreground mt-1">
                 ${currentFunding.toLocaleString()} out of $
                 {totalBalance.toLocaleString()}
               </p>
             </div>
             <div>
-              <p className='mb-2'>Contributions by Network</p>
-              <ChartContainer className='h-[200px]'>
-                <ResponsiveContainer width='100%' height='100%'>
+              <p className="mb-2">Contributions by Network</p>
+              <ChartContainer className="h-[200px]">
+                <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={networkData}
-                      cx='50%'
-                      cy='50%'
+                      cx="50%"
+                      cy="50%"
                       labelLine={false}
                       outerRadius={80}
-                      fill='#8884d8'
-                      dataKey='value'>
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
                       {networkData.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}

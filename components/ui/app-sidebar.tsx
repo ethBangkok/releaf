@@ -1,11 +1,4 @@
-import {
-  Calendar,
-  Home,
-  Inbox,
-  Search,
-  Settings,
-  DollarSign,
-} from "lucide-react";
+import { Home, DollarSign, CircleUserRound } from "lucide-react";
 
 import {
   Sidebar,
@@ -30,6 +23,11 @@ const items = [
     url: "/dashboard/funding",
     icon: DollarSign,
   },
+  {
+    title: "Beneficiaries",
+    url: "/dashboard/beneficiary",
+    icon: CircleUserRound,
+  },
 ];
 
 export function AppSidebar() {
@@ -43,11 +41,13 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.title} className="m-1">
                   <SidebarMenuButton asChild>
                     <a href={item.url}>
                       <item.icon />
-                      <span>{item.title}</span>
+                      <span className="flex place-content-center text-xl tracking-tight">
+                        {item.title}
+                      </span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
