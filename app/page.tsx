@@ -2,13 +2,9 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function IndexPage() {
+export default function App() {
   const router = useRouter();
   const path = usePathname();
-
-  console.log(router, path);
-
-  const shouldRedirect = false;
 
   useEffect(() => {
     if (path === "/") {
@@ -16,5 +12,5 @@ export default function IndexPage() {
     }
   }, [router]);
 
-  return <div>{/* Content of your page */}</div>;
+  return <div>Loading</div>;
 }
