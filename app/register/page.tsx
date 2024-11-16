@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -12,11 +13,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   AMOUNT_TO_STAKE,
+  AMOUNT_TO_STAKE_IN_ETH,
   deployedPoolContractAddress,
 } from "@/constants/config";
-import { useWriteFundPoolRegisterTreasurer } from "@/hooks/generated-contracts/fund-pool";
+import {
+  useReadFundPoolTreasurer,
+  useWriteFundPoolRegisterTreasurer,
+} from "@/hooks/generated-contracts/fund-pool";
 import { ConnectKitButton } from "connectkit";
 import { useAccount, useBalance, useConnect } from "wagmi";
+import { useCheckIfTreasurer } from "../utils/custom-contracts-calls";
+import { useRouter } from "next/navigation";
 
 export default function FunderRegistration() {
   const register = useWriteFundPoolRegisterTreasurer({
@@ -29,6 +36,7 @@ export default function FunderRegistration() {
       },
     },
   });
+  const router = useRouter();
   const wallet = useConnect();
   console.log("wallet", wallet);
   const account = useAccount();
@@ -40,7 +48,8 @@ export default function FunderRegistration() {
       },
     },
   });
-  console.log("balance", balance);
+
+  const isTreasurer = useCheckIfTreasurer();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // wallet.connectAsync({
@@ -52,10 +61,20 @@ export default function FunderRegistration() {
     //     },
     //   },
     // });
+    // await sendTransaction({
+    //   to: deployedPoolContractAddress,
+    //   value: AMOUNT_TO_STAKE,
+    //   args: [account.address as `0x${string}`],
+    // });
     await register.writeContractAsync({
-      address: deployedPoolContractAddress,
+      value: AMOUNT_TO_STAKE,
       args: [account.address as `0x${string}`],
+      address: deployedPoolContractAddress,
     });
+    // await register.writeContractAsync({
+    //   address: deployedPoolContractAddress,
+    //   args: [account.address as `0x${string}`],
+    // });
     // Handle form submission here
     console.log("Form submitted");
   };
@@ -64,6 +83,33 @@ export default function FunderRegistration() {
     balance?.data !== undefined &&
     balance.data >= 0 &&
     balance.data <= AMOUNT_TO_STAKE;
+
+  if (isTreasurer.data) {
+    return (
+      <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white flex items-center justify-center p-4'>
+        <Card className='w-full max-w-md'>
+          <CardHeader>
+            <CardTitle className='text-2xl font-bold text-center'>
+              Funder Registration
+            </CardTitle>
+            <CardDescription className='text-center'>
+              Join our Web3 funding community
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className='text-center text-blue-700'>
+              You are already a funder
+            </p>
+          </CardContent>
+          <CardFooter>
+            <Button className='w-full' onClick={() => router.push("/")}>
+              Go to home page
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white flex items-center justify-center p-4'>
@@ -90,7 +136,7 @@ export default function FunderRegistration() {
                 id='stake'
                 type='number'
                 placeholder={"$ " + AMOUNT_TO_STAKE.toString()}
-                value={AMOUNT_TO_STAKE}
+                value={String(AMOUNT_TO_STAKE)}
                 disabled
                 // onChange={(e) => setAmount(e.target.value)}
                 required
