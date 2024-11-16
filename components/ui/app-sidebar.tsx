@@ -1,11 +1,17 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import {
+  Calendar,
+  Home,
+  Inbox,
+  Search,
+  Settings,
+  DollarSign,
+} from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -15,9 +21,14 @@ import { ConnectKitButton } from "connectkit";
 // Menu items.
 const items = [
   {
-    title: "Home",
+    title: "Dashboard",
     url: "/dashboard",
     icon: Home,
+  },
+  {
+    title: "Funding",
+    url: "/dashboard/funding",
+    icon: DollarSign,
   },
 ];
 
@@ -26,10 +37,9 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>ReliefNet</SidebarGroupLabel>
-          <SidebarMenu>
-            <ConnectKitButton />
-          </SidebarMenu>
+          <h3 className="flex place-content-center text-2xl font-semibold tracking-tight m-3">
+            Fund-ING
+          </h3>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -42,6 +52,9 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+            </SidebarMenu>
+            <SidebarMenu className="m-3">
+              <ConnectKitButton />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
