@@ -3,13 +3,14 @@ import {
   useReadFundPoolTreasurer,
   useWriteFundPoolDepositFund,
 } from "@/hooks/generated-contracts/fund-pool";
+import { formatEther } from "viem";
 import { useAccount, useBalance } from "wagmi";
 
 export const useGetBalance = () => {
   return useBalance({
     address: deployedPoolContractAddress,
     query: {
-      select: (data) => Number(String(data.value)),
+      select: (data) => Number(String(formatEther(data.value))),
     },
   });
 };

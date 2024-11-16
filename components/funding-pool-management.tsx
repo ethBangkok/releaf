@@ -23,6 +23,7 @@ import {
   deployedPoolContractAddress,
 } from "@/constants/config";
 import { useDepositTreasuryPool } from "@/app/utils/custom-contracts-calls";
+import { formatEther, parseEther } from "viem";
 
 export function FundingPoolManagementComponent() {
   const [amount, setAmount] = useState("");
@@ -92,7 +93,7 @@ export function FundingPoolManagementComponent() {
       <header className='text-center mb-8'>
         <h1 className='text-3xl font-bold mb-2'>Funding Pool Management</h1>
         <p className='text-2xl font-semibold text-primary'>
-          Total Pool Balance: ${totalBalance.toLocaleString()}
+          Total Pool Balance: ${availableBalance?.toLocaleString()}
         </p>
       </header>
 
