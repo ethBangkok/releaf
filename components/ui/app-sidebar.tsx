@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { ConnectKitButton } from "connectkit";
 
 // Menu items.
 const items = [
@@ -25,7 +26,10 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>App</SidebarGroupLabel>
+          <SidebarGroupLabel>ReliefNet</SidebarGroupLabel>
+          <SidebarMenu>
+            <ConnectKitButton />
+          </SidebarMenu>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
