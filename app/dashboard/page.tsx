@@ -36,6 +36,7 @@ import {
 import { useProjectTransactions } from "../utils/subgraph.query";
 import { useWriteFundPoolDistributeFunds } from "@/hooks/generated-contracts/fund-pool";
 import { deployedPoolContractAddress } from "@/constants/config";
+import { toast } from "@/hooks/use-toast";
 
 export default function Dashboard() {
   const { data } = useProjectTransactions();
@@ -61,7 +62,21 @@ export default function Dashboard() {
     }
   }, [data]);
 
-  const disbursement = useWriteFundPoolDistributeFunds();
+  const disbursement = useWriteFundPoolDistributeFunds({
+    mutation: {
+      onError(error, variables, context) {
+        toast({
+          title: "Error Occured ",
+        });
+      },
+      onSuccess(data, variables, context) {
+        toast({
+          title: "Successfully disbursed",
+          description: "You can check the beneficiary wallet",
+        });
+      },
+    },
+  });
 
   const handleDisbursement = async () => {
     console.log("Disbursing to beneficiaries");
