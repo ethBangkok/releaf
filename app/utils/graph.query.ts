@@ -31,7 +31,7 @@ blockTimestamp
 transactionHash
 }
 }
-`
+`;
 
 export const beneficiaryList = `query 
 beneficiaryList {
@@ -43,4 +43,4 @@ beneficiaryList {
     blockTimestamp
   }
 }
-`
+`;

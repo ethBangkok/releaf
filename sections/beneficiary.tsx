@@ -1,5 +1,6 @@
 "use client";
 
+import { useBeneficiaryList } from "@/app/utils/subgraph.query";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -36,9 +37,7 @@ export default function BeneficiaryPage() {
   const [beneficiaries, setBeneficiaries] = useState<string[]>([]);
   const { toast } = useToast();
   const addBenefciary = useWriteFundPoolAddBeneficiary();
-  const beneficiariesL = useReadFundPoolBeneficiaries({
-    address: deployedPoolContractAddress,
-  });
+  const beneficiariesL = useBeneficiaryList();
   console.log("beneficiaries", beneficiariesL);
 
   const handleAddBeneficiary = async () => {
@@ -122,20 +121,21 @@ export default function BeneficiaryPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {beneficiaries.length > 0 ? (
+          {beneficiariesL?.data?.beneficiaryAddeds?.length > 0 ? (
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Wallet Address</TableHead>
-                  <TableHead className='w-[100px]'>Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {beneficiaries.map((address, index) => (
-                  <TableRow key={index}>
-                    <TableCell className='font-mono'>{address}</TableCell>
-                  </TableRow>
-                ))}
+                {beneficiariesL?.data?.beneficiaryAddeds?.map(
+                  ({ beneficiary }: any, index: number) => (
+                    <TableRow key={index + beneficiary}>
+                      <TableCell className='font-mono'>{beneficiary}</TableCell>
+                    </TableRow>
+                  )
+                )}
               </TableBody>
             </Table>
           ) : (
