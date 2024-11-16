@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bell, DollarSign, ExternalLink, Search, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -27,56 +26,31 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const totalBalance = 1600000;
-
-const transactionHistory = [
-  {
-    id: 1,
-    date: "2023-06-01",
-    amount: 50000,
-    fromWallet: "0x1234...5678",
-    toWallet: "0xABCD...EFGH",
-  },
-  {
-    id: 2,
-    date: "2023-06-02",
-    amount: 25000,
-    fromWallet: "0xABCD...EFGH",
-    toWallet: "0x5678...9ABC",
-  },
-  {
-    id: 3,
-    date: "2023-06-03",
-    amount: 75000,
-    fromWallet: "0x9ABC...DEF0",
-    toWallet: "0xABCD...EFGH",
-  },
-  {
-    id: 4,
-    date: "2023-06-04",
-    amount: 10000,
-    fromWallet: "0xABCD...EFGH",
-    toWallet: "0xDEF0...1234",
-  },
-  {
-    id: 5,
-    date: "2023-06-05",
-    amount: 30000,
-    fromWallet: "0x5678...9ABC",
-    toWallet: "0xABCD...EFGH",
-  },
-];
+import { useProjectTransactions } from "../utils/subgraph.query";
 
 export default function Dashboard() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const { data } = useProjectTransactions();
+  const [transactions, setTransactions] = useState([]);
+  const [totalBalance, setTotalBalance] = useState(0);
 
-  const filteredTransactions = transactionHistory.filter(
-    (transaction) =>
-      transaction.fromWallet.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.toWallet.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.amount.toString().includes(searchTerm)
-  );
+  const gweiToEth = (amount) => {
+    return Number(amount) / 1000000000;
+  };
+
+  useEffect(() => {
+    if (data) {
+      const { fundAddeds, funderAddeds } = data;
+      const mergedTransactions = [...fundAddeds, ...funderAddeds];
+      const sortedTransactions = mergedTransactions?.sort(
+        (a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp)
+      );
+      const sum = sortedTransactions.reduce((accumulator, currentValue) => {
+        return accumulator + Number(currentValue.amount);
+      }, 0);
+      setTotalBalance(gweiToEth(sum));
+      setTransactions(sortedTransactions);
+    }
+  }, [data]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -122,12 +96,7 @@ export default function Dashboard() {
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
-                ${totalBalance.toLocaleString()}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Updated as of 11/16/2024, 10:02:10 PM
-              </p>
+              <div className="text-2xl font-bold">${totalBalance} MATIC</div>
             </CardContent>
           </Card>
           <Card>
@@ -137,9 +106,7 @@ export default function Dashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
-                {transactionHistory.length}
-              </div>
+              <div className="text-2xl font-bold">{transactions.length}</div>
               <p className="text-xs text-muted-foreground">
                 All-time transactions
               </p>
@@ -154,12 +121,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {
-                  new Set([
-                    ...transactionHistory.map((t) => t.fromWallet),
-                    ...transactionHistory.map((t) => t.toWallet),
-                  ]).size
-                }
+                {new Set([...transactions.map((t) => t.funder)]).size}
               </div>
               <p className="text-xs text-muted-foreground">
                 Interacted with the pool
@@ -179,29 +141,27 @@ export default function Dashboard() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Date</TableHead>
+                    <TableHead>Timestamp</TableHead>
                     <TableHead>Amount</TableHead>
-                    <TableHead>From Wallet</TableHead>
-                    <TableHead>To Wallet</TableHead>
+                    <TableHead>Funder</TableHead>
                     <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredTransactions.map((transaction) => (
+                  {transactions.map((transaction) => (
                     <TableRow key={transaction.id}>
-                      <TableCell>{transaction.date}</TableCell>
+                      <TableCell>{transaction.blockTimestamp}</TableCell>
                       <TableCell>
-                        ${transaction.amount.toLocaleString()}
+                        {gweiToEth(transaction.amount)} MATIC
                       </TableCell>
-                      <TableCell>{transaction.fromWallet}</TableCell>
-                      <TableCell>{transaction.toWallet}</TableCell>
+                      <TableCell>{transaction.funder}</TableCell>
                       <TableCell>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() =>
                             window.open(
-                              `https://etherscan.io/tx/${transaction.id}`,
+                              `https://eth-sepolia.blockscout.com/tx/${transaction.transactionHash}`,
                               "_blank"
                             )
                           }
