@@ -16,15 +16,7 @@ import {
 } from "@/constants/config";
 import { useWriteFundPoolRegisterTreasurer } from "@/hooks/generated-contracts/fund-pool";
 import { ConnectKitButton } from "connectkit";
-import {
-  useAccount,
-  useBalance,
-  useChainId,
-  useChains,
-  useConnect,
-  useWalletClient,
-} from "wagmi";
-import { useGetBalance } from "../utils/use-balance";
+import { useAccount, useBalance, useConnect } from "wagmi";
 
 export default function FunderRegistration() {
   const register = useWriteFundPoolRegisterTreasurer({
