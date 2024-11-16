@@ -18,17 +18,37 @@ import { useWriteFundPoolRegisterTreasurer } from "@/hooks/generated-contracts/f
 import { ConnectKitButton } from "connectkit";
 import {
   useAccount,
+  useBalance,
   useChainId,
   useChains,
   useConnect,
   useWalletClient,
 } from "wagmi";
+import { useGetBalance } from "../utils/use-balance";
 
 export default function FunderRegistration() {
-  const register = useWriteFundPoolRegisterTreasurer();
+  const register = useWriteFundPoolRegisterTreasurer({
+    mutation: {
+      onError(error, variables, context) {
+        console.log(error);
+      },
+      onSuccess(data, variables, context) {
+        console.log(data);
+      },
+    },
+  });
   const wallet = useConnect();
   console.log("wallet", wallet);
   const account = useAccount();
+  const balance = useBalance({
+    address: account?.address,
+    query: {
+      select(data) {
+        return Number(String(data.value));
+      },
+    },
+  });
+  console.log("balance", balance);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // wallet.connectAsync({
@@ -47,6 +67,11 @@ export default function FunderRegistration() {
     // Handle form submission here
     console.log("Form submitted");
   };
+
+  const hasEnoughBalance =
+    balance?.data !== undefined &&
+    balance.data >= 0 &&
+    balance.data <= AMOUNT_TO_STAKE;
 
   return (
     <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white flex items-center justify-center p-4'>
@@ -80,7 +105,17 @@ export default function FunderRegistration() {
               />
             </div>
 
-            <Button type='submit' className='w-full'>
+            <div>Your balance: {balance.data || "N/A"} </div>
+            {hasEnoughBalance && (
+              <p className='text-blue-700'>
+                You do not have enough balance to stake and register
+              </p>
+            )}
+
+            <Button
+              disabled={!!hasEnoughBalance || register.isPending}
+              type='submit'
+              className='w-full'>
               Stake and Register
             </Button>
           </form>
