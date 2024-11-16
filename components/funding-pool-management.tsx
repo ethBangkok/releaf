@@ -17,12 +17,27 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
 import { useAccount, useBalance, useChains } from "wagmi";
-import { deployedPoolContractAddress } from "@/constants/config";
+import {
+  AMOUNT_TO_STAKE,
+  AMOUNT_TO_STAKE_IN_ETH,
+  deployedPoolContractAddress,
+} from "@/constants/config";
+import { useDepositTreasuryPool } from "@/app/utils/custom-contracts-calls";
 
 export function FundingPoolManagementComponent() {
   const [amount, setAmount] = useState("");
   const [network, setNetwork] = useState("");
   const [error, setError] = useState("");
+  const fundTreasuryPool = useDepositTreasuryPool({
+    mutation: {
+      onError(error, variables, context) {
+        console.log(error);
+      },
+      onSuccess(data, variables, context) {
+        console.log(data);
+      },
+    },
+  });
 
   const chains = useChains();
   console.log("chains", chains);
@@ -37,10 +52,11 @@ export function FundingPoolManagementComponent() {
 
   const totalBalance = 100000;
   const availableBalance = balance?.data;
-  const stakeRequired = 0.3;
   const currentFunding = 50000;
 
-  const handleFundNow = () => {
+  const handleFundNow = async (e) => {
+    e.preventDefault();
+
     if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
       setError("Please enter a valid amount");
       return;
@@ -49,12 +65,17 @@ export function FundingPoolManagementComponent() {
       setError("Amount exceeds available balance");
       return;
     }
-    if (!network) {
-      setError("Please select a network");
-      return;
-    }
+    // if (!network) {
+    //   setError("Please select a network");
+    //   return;
+    // }
     setError("");
     // Here you would typically handle the funding logic
+    await fundTreasuryPool.writeContractAsync({
+      address: deployedPoolContractAddress,
+
+      value: BigInt(amount),
+    });
     console.log(`Funding ${amount} on ${network}`);
   };
 
@@ -81,7 +102,7 @@ export function FundingPoolManagementComponent() {
             <CardTitle>Add Funds</CardTitle>
           </CardHeader>
           <CardContent>
-            <form className='space-y-4'>
+            <form className='space-y-4' onSubmit={handleFundNow}>
               <div className='space-y-2'>
                 <Label htmlFor='amount'>Amount to Fund</Label>
                 <Input
@@ -98,7 +119,7 @@ export function FundingPoolManagementComponent() {
                   </p>
                 )}
               </div>
-              <div className='space-y-2'>
+              {/* <div className='space-y-2'>
                 <Label htmlFor='network'>Select Network</Label>
                 <Select onValueChange={setNetwork}>
                   <SelectTrigger id='network'>
@@ -110,7 +131,7 @@ export function FundingPoolManagementComponent() {
                     <SelectItem value='bsc'>Binance Smart Chain</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
               <Alert>
                 <AlertTitle>Funding Information</AlertTitle>
                 <AlertDescription>
@@ -118,10 +139,15 @@ export function FundingPoolManagementComponent() {
                     Available Balance: $
                     {availableBalance?.toLocaleString() || "N/A"}
                   </p>
-                  <p>Stake Required: ${stakeRequired.toLocaleString()}</p>
+                  <p>
+                    Staked Amount: ${AMOUNT_TO_STAKE_IN_ETH.toLocaleString()}
+                  </p>
                 </AlertDescription>
               </Alert>
-              <Button className='w-full' onClick={handleFundNow}>
+              <Button
+                className='w-full'
+                type={"submit"}
+                onClick={handleFundNow}>
                 Fund Now
               </Button>
             </form>
