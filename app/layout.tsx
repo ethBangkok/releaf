@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import WagmiCustomProvider from "@/providers/wagmi-provider";
+import { SubgraphProvider } from "@/providers/subgraph-provider";
+import { Client, cacheExchange, fetchExchange } from '@urql/core';
+
 
 export const metadata: Metadata = {
   title: "EthBangkok",
@@ -15,7 +18,16 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <WagmiCustomProvider>
+        <SubgraphProvider
+        subgraphClient={
+          new Client({
+            url: 'https://api.studio.thegraph.com/query/42205/eth-bangkok/version/latest',
+            exchanges: [cacheExchange, fetchExchange]
+          })
+        }
+        >
         <body>{children}</body>
+        </SubgraphProvider>
       </WagmiCustomProvider>
     </html>
   );

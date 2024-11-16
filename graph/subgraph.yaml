@@ -5,7 +5,7 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: FundRaiser
+    name: FundPool
     network: sepolia
     source:
       address: "0x3b0dA8E76b64f126ea233591553baB51bab84246"
@@ -26,4 +26,4 @@ dataSources:
           handler: handleFundAdded
         - event: FunderAdded(address,uint256)
           handler: handleFunderAdded
-      file: ./src/fund-raiser.ts
+      file: ./src/fund-pool.ts
