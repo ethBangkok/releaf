@@ -1,12 +1,5 @@
 [
 	{
-		"inputs": [],
-		"name": "depositFund",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -26,6 +19,19 @@
 		],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "beneficiary",
+				"type": "address"
+			}
+		],
+		"name": "BeneficiaryAdded",
+		"type": "event"
 	},
 	{
 		"anonymous": false,
@@ -66,29 +72,38 @@
 		"type": "event"
 	},
 	{
+		"anonymous": false,
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "walletaddress",
-				"type": "address"
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "totalDistributed",
+				"type": "uint256"
 			}
 		],
-		"name": "registerTreasurer",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
+		"name": "FundsDistributed",
+		"type": "event"
 	},
 	{
 		"stateMutability": "payable",
 		"type": "fallback"
 	},
 	{
-		"stateMutability": "payable",
-		"type": "receive"
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_wallet",
+				"type": "address"
+			}
+		],
+		"name": "addBeneficiary",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "channelAddress",
+		"name": "admin",
 		"outputs": [
 			{
 				"internalType": "address",
@@ -107,7 +122,114 @@
 				"type": "address"
 			}
 		],
+		"name": "beneficiaries",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "wallet",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "allocatedAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "isRegistered",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "beneficiaryList",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "channelAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "depositFund",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "distributeFunds",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
 		"name": "fundDeposited",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "getBeneficiaryByIndex",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBeneficiaryCount",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -148,6 +270,19 @@
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "walletAddress",
+				"type": "address"
+			}
+		],
+		"name": "registerTreasurer",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "",
 				"type": "address"
 			}
@@ -162,5 +297,9 @@
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"stateMutability": "payable",
+		"type": "receive"
 	}
 ]
