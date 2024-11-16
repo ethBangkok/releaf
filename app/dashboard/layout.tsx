@@ -11,18 +11,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const wallet = localStorage.getItem("wallet");
   const router = useRouter();
 
-  useEffect(() => {
-    if (!wallet) router.push("/register");
-  }, [wallet]);
+  // useEffect(() => {
+  //   if (!wallet) router.push("/register");
+  // }, [wallet]);
 
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarTrigger />
-      <main className="m-5 w-full ml-0">{children}</main>
+      <main className='m-5 w-full ml-0'>{children}</main>
     </SidebarProvider>
   );
 }
