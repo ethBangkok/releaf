@@ -26,4 +26,8 @@ dataSources:
           handler: handleFundAdded
         - event: FunderAdded(address,uint256)
           handler: handleFunderAdded
+        - event: BeneficiaryAdded(address)
+          handler: handleBeneficiaryAdded
+        - event: FundsDistributed(uint256)
+          handler: handleFundsDistributed
       file: ./src/fund-pool.ts
