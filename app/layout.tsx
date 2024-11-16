@@ -19,12 +19,12 @@ export default function RootLayout({
     <html lang='en'>
       <WagmiCustomProvider>
         <SubgraphProvider
-        subgraphClient={
-          new Client({
-            url: 'https://api.studio.thegraph.com/query/42205/eth-bangkok/version/latest',
-            exchanges: [cacheExchange, fetchExchange]
-          })
-        }
+        // subgraphClient={
+        //   new Client({
+        //     url: 'https://api.studio.thegraph.com/query/42205/eth-bangkok/version/latest',
+        //     exchanges: [cacheExchange, fetchExchange]
+        //   })
+        // }
         >
         <body>{children}</body>
         </SubgraphProvider>

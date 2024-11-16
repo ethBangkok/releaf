@@ -1,5 +1,5 @@
 'use client';
-import { Client } from '@urql/core';
+import { cacheExchange, Client, fetchExchange } from '@urql/core';
 import React, { FC, createContext, useContext } from 'react';
 
 export type SubgraphContextType = {
@@ -12,17 +12,19 @@ const SubgraphContext = createContext({
 
 type SubgraphProviderops = {
   children: React.ReactNode;
-  subgraphClient: Client;
 };
 
 export const SubgraphProvider: FC<SubgraphProviderops> = ({
   children,
-  subgraphClient,
+ 
 }) => {
   return (
     <SubgraphContext.Provider
       value={{
-        subgraphClient: subgraphClient as Client,
+        subgraphClient: new Client({
+            url: 'https://api.studio.thegraph.com/query/42205/eth-bangkok/version/latest',
+            exchanges: [cacheExchange, fetchExchange]
+        }),
       }}
     >
       {children}
