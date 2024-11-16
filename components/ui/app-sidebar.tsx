@@ -1,4 +1,4 @@
-import { Home, DollarSign, CircleUserRound } from "lucide-react";
+import { Home, DollarSign, CircleUserRound, Leaf } from "lucide-react";
 
 import {
   Sidebar,
@@ -35,17 +35,18 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <h3 className="flex place-content-center text-2xl font-semibold tracking-tight m-3">
-            Fund-ING
+          <h3 className='flex place-content-center text-2xl font-semibold tracking-tight m-3'>
+            Releaf &nbsp;
+            <Leaf color='green' />
           </h3>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title} className="m-1">
+                <SidebarMenuItem key={item.title} className='m-1'>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>
                       <item.icon />
-                      <span className="flex place-content-center text-xl tracking-tight">
+                      <span className='flex place-content-center text-xl tracking-tight'>
                         {item.title}
                       </span>
                     </a>
@@ -53,7 +54,7 @@ export function AppSidebar() {
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
-            <SidebarMenu className="m-3">
+            <SidebarMenu className='m-3'>
               <ConnectKitButton />
             </SidebarMenu>
           </SidebarGroupContent>
