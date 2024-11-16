@@ -85,11 +85,12 @@ export default function PushChat() {
       setIsLoading(true);
       const chatHistory = await PushAPI.chat.history({
         account: walletAddress,
-        threadhash: "your-thread-hash",
+        threadhash: ,
         toDecrypt: true,
         pgpPrivateKey,
         env: ENV.STAGING,
       });
+      console.log("chatHistory", chatHistory);
       setChatHistory(chatHistory);
       scrollToBottom();
     } catch (err) {
@@ -154,6 +155,12 @@ export default function PushChat() {
     <Card className='w-full max-w-md mx-auto shadow-lg'>
       <CardHeader className='border-b bg-muted'>
         <CardTitle className='flex items-center justify-between'>
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => window.location.go("/dashboard")}>
+            Back to Home
+          </Button>
           <span className='text-xl font-bold'>Push Chat</span>
           {isConnecting ? (
             <Button disabled variant='ghost' size='sm'>

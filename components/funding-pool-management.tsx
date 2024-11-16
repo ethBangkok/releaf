@@ -156,7 +156,14 @@ export function FundingPoolManagementComponent() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Contribution Overview</CardTitle>
+            <CardTitle>
+              <h2 className='text-xl font-bold'>Funding Pool Stats</h2>
+              <Button
+                onClick={() => window.location.replace("/chat")}
+                className='text-sm'>
+                Chat with the Admin
+              </Button>
+            </CardTitle>
           </CardHeader>
           <CardContent className='space-y-4'>
             <div>
