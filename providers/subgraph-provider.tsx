@@ -14,6 +14,11 @@ type SubgraphProviderops = {
   children: React.ReactNode;
 };
 
+const subgraphClient = new Client({
+    url: 'https://api.studio.thegraph.com/query/42205/eth-bangkok/version/latest',
+    exchanges: [cacheExchange, fetchExchange]
+})
+
 export const SubgraphProvider: FC<SubgraphProviderops> = ({
   children,
  
@@ -21,10 +26,7 @@ export const SubgraphProvider: FC<SubgraphProviderops> = ({
   return (
     <SubgraphContext.Provider
       value={{
-        subgraphClient: new Client({
-            url: 'https://api.studio.thegraph.com/query/42205/eth-bangkok/version/latest',
-            exchanges: [cacheExchange, fetchExchange]
-        }),
+        subgraphClient
       }}
     >
       {children}

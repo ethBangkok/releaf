@@ -5,14 +5,19 @@ import { FundTransaction } from "./graph.query";
 
 export const useProjectTransactions = () =>{
     const { subgraphClient } = useSubgraph();
-    const query = useQuery(
+    try{const query = useQuery(
         {
           queryKey: ['ProjectTransactions'],
           queryFn: async () => {
             const { data } = await subgraphClient.query(FundTransaction, {});
+            console.log(data)
             return data;
           },
         },
       );
+    return query;}
+      catch(err){
+        console.log(err)
+      }
 
 }
