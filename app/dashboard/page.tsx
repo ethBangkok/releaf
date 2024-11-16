@@ -126,7 +126,7 @@ export default function Dashboard() {
                 ${totalBalance.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground">
-                Updated as of {new Date().toLocaleString()}
+                Updated as of 11/16/2024, 10:02:10 PM
               </p>
             </CardContent>
           </Card>
