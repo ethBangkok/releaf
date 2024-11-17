@@ -12,6 +12,7 @@ import {
   AMOUNT_TO_STAKE_IN_ETH,
   deployedPoolContractAddress,
 } from "@/constants/config";
+import { ethers } from "ethers";
 import { useState } from "react";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 import { useBalance, useChains } from "wagmi";
@@ -82,7 +83,7 @@ export function FundingPoolManagementComponent() {
       <header className='text-center mb-8'>
         <h1 className='text-3xl font-bold mb-2'>Funding Pool Management</h1>
         <p className='text-2xl font-semibold text-primary'>
-          Total Pool Balance: ${availableBalance?.toLocaleString()}
+          Total Pool Balance: {ethers.formatUnits(BigInt(availableBalance || 0))} ETH
         </p>
       </header>
 

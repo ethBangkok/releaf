@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Releaf
 
-## Getting Started
+Decentralized Fundraising Platform: Empowering communities to raise funds on Sepholia and disburse funds to beneficiaries.
 
-First, run the development server:
+After the occurrence of natural disasters such as hurricanes, earthquakes, or floods, immediate and transparent relief efforts are very crucial. Traditional fundraising and aid distribution methods often suffer from inefficiencies, lack of transparency, and slow disbursement to affected individuals. The Fundraising Pool Project addresses these challenges by leveraging blockchain technology to streamline the fundraising and distribution process, ensuring speed, transparency, and accountability.
+
+This Releaf Project is a blockchain-powered platform where anyone can contribute funds to a pool, which can then be distributed to a list of verified beneficiaries. It integrates The Graph (Subgraph) for real-time data indexing, Push Protocol for notifications and chats, and Blockscout as the blockchain explorer, ensuring transparency and seamless interaction.
+
+Key Features:
+
+1. Add Funds:
+   Contributors can add funds to the pool with support for cross-chain funding, enabling contributions from multiple blockchain networks.
+
+2. Notifications & Chat:
+   Push Protocol keeps contributors and beneficiaries informed with real-time notifications and facilitates direct communication.
+
+3. Blockchain Transparency: Blockscout provides detailed transaction visibility, ensuring trust and accountability.
+
+Future Enhancements:
+
+1. Disbursement Plans: Introduce automated relief distribution to beneficiaries.
+2. Automated plans will leverage smart contract automation, triggered by predefined conditions.
+3. Cross-Chain Disbursement: Expand cross-chain functionality to disburse funds across multiple networks efficiently.
+
+This project combines advanced blockchain technologies to create a transparent, efficient, and user-friendly solution for fundraising and relief distribution, with scalable features to meet future needs.
+
+## Installation
+
+Install Releaf with npm
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+  git clone https://github.com/ethBangkok/releaf.git
+  yarn install
+  yarn deploy
+  yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Authors
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Anupama Koirala](https://www.linkedin.com/in/anupama-koirala/)
+- [Raghav Kattel](https://www.linkedin.com/in/argahv/)
+- [Sailendra Maharjan](https://www.linkedin.com/in/sail3n/)
