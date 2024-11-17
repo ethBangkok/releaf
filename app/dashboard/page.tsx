@@ -26,31 +26,40 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  deployedPoolContractAddress,
+} from "@/constants/config";
 import { useProjectTransactions } from "../utils/subgraph.query";
+import { BeneficiaryAdded } from "@/graph/generated/schema";
+import { useBalance } from "wagmi";
 
 export default function Dashboard() {
   const { data } = useProjectTransactions();
   const [transactions, setTransactions] = useState([]);
   const [totalBalance, setTotalBalance] = useState(0);
-
+  const balance = useBalance({
+    address: deployedPoolContractAddress,
+    query: {
+      select: (data) => Number(String(data.value)),
+    },
+  });
   const gweiToEth = (amount) => {
     return Number(amount) / 1000000000;
   };
 
   useEffect(() => {
     if (data) {
-      const { fundAddeds, funderAddeds } = data;
-      const mergedTransactions = [...fundAddeds, ...funderAddeds];
+      const { fundAddeds, funderAddeds,beneficiaryAddeds,fundsDistributeds } = data;
+      const mergedTransactions = [...fundAddeds, ...funderAddeds,...beneficiaryAddeds,...fundsDistributeds];
       const sortedTransactions = mergedTransactions?.sort(
         (a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp)
       );
-      const sum = sortedTransactions.reduce((accumulator, currentValue) => {
-        return accumulator + Number(currentValue.amount);
-      }, 0);
-      setTotalBalance(gweiToEth(sum));
+      
+      setTotalBalance(gweiToEth(balance?.data));
+      console.log(sortedTransactions);
       setTransactions(sortedTransactions);
     }
-  }, [data]);
+  }, [data,balance]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -96,7 +105,7 @@ export default function Dashboard() {
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${totalBalance} MATIC</div>
+              <div className="text-2xl font-bold">{totalBalance} Eth</div>
             </CardContent>
           </Card>
           <Card>
@@ -143,7 +152,8 @@ export default function Dashboard() {
                   <TableRow>
                     <TableHead>Timestamp</TableHead>
                     <TableHead>Amount</TableHead>
-                    <TableHead>Funder</TableHead>
+                    <TableHead>Funder/Beneficiary</TableHead>
+                    <TableHead>Event Type</TableHead>
                     <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -152,9 +162,11 @@ export default function Dashboard() {
                     <TableRow key={transaction.id}>
                       <TableCell>{transaction.blockTimestamp}</TableCell>
                       <TableCell>
-                        {gweiToEth(transaction.amount)} MATIC
+                        {transaction?.amount ? gweiToEth(transaction?.amount) +'ETH' :'N/A' } 
+                        {/* {gweiToEth(transaction.amount)} ETH  */}
                       </TableCell>
-                      <TableCell>{transaction.funder}</TableCell>
+                      <TableCell>{transaction?.funder || transaction?.beneficiary}</TableCell>
+                      <TableCell>{transaction['__typename']}</TableCell>
                       <TableCell>
                         <Button
                           variant="outline"

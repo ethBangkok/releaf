@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { ethers } from 'ethers'
+import { AbiCoder, ethers } from 'ethers'
 import * as PushAPI from '@pushprotocol/restapi'
 import { Web3Provider } from '@ethersproject/providers'
 import { ENV } from '@pushprotocol/restapi/src/lib/constants'
@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
+import { toBytes, encodeAbiParameters, keccak256 } from 'viem'
 
 interface ChatMessage {
   fromDID: string
@@ -77,12 +78,18 @@ export function PushChat() {
 
   const fetchChatHistory = async () => {
     if (!walletAddress || !recipientAddress) return
+ // Initialize the AbiCoder
+const abiCoder = new AbiCoder();
+
+// Encode the addresses using the new AbiCoder and hash them with keccak256
+const encodedData = abiCoder.encode(["address", "address"], [walletAddress, recipientAddress]);
+const threadHash = keccak256(new Uint8Array(Buffer.from(encodedData.slice(2), 'hex')));
 
     try {
       setIsLoading(true)
       const chatHistory = await PushAPI.chat.history({
         account: walletAddress,
-        threadhash: 'your-thread-hash',
+        threadhash: threadHash ,
         toDecrypt: true,
         pgpPrivateKey,
         env: ENV.STAGING,
@@ -122,13 +129,14 @@ export function PushChat() {
 
     try {
       setIsSending(true)
-      await PushAPI.chat.send({
+     const response =  await PushAPI.chat.send({
         messageContent: message,
         messageType: 'Text',
         receiverAddress: recipientAddress,
         signer,
         env: ENV.STAGING,
       })
+      console.log('response', response)
       setMessage('')
       fetchChatHistory()
       toast({
