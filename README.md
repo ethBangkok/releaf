@@ -4,7 +4,7 @@ Decentralized Fundraising Platform: Empowering communities to raise funds on Sep
 
 After the occurrence of natural disasters such as hurricanes, earthquakes, or floods, immediate and transparent relief efforts are very crucial. Traditional fundraising and aid distribution methods often suffer from inefficiencies, lack of transparency, and slow disbursement to affected individuals. The Fundraising Pool Project addresses these challenges by leveraging blockchain technology to streamline the fundraising and distribution process, ensuring speed, transparency, and accountability.
 
-This Releaf Project is a blockchain-powered platform where anyone can contribute funds to a pool, which can then be distributed to a list of verified beneficiaries. It integrates The Graph (Subgraph) for real-time data indexing, Push Protocol for notifications and chats, and Blockscout as the blockchain explorer, ensuring transparency and seamless interaction.
+This Releaf Project is a blockchain-powered platform where anyone can contribute funds to a pool, which can then be distributed to a list of verified beneficiaries. It integrates The Graph (Subgraph) for real-time data indexing, Push Protocol for notifications and chats, Privy for user authentication and Blockscout as the blockchain explorer, ensuring transparency and seamless interaction.
 
 Key Features:
 
