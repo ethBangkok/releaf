@@ -3,6 +3,7 @@ import { SubgraphProvider } from "@/providers/subgraph-provider";
 import WagmiCustomProvider from "@/providers/wagmi-provider";
 import type { Metadata } from "next";
 import "./globals.css";
+import PrivyProvider from "@/providers/privy-provider";
 
 export const metadata: Metadata = {
   title: "EthBangkok",
@@ -25,7 +26,9 @@ export default function RootLayout({
         //   })
         // }
         >
-          <body>{children}</body>
+          <PrivyProvider>
+            <body>{children}</body>
+          </PrivyProvider>
           <Toaster />
         </SubgraphProvider>
       </WagmiCustomProvider>

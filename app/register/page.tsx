@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -13,17 +12,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   AMOUNT_TO_STAKE,
-  AMOUNT_TO_STAKE_IN_ETH,
   deployedPoolContractAddress,
 } from "@/constants/config";
-import {
-  useReadFundPoolTreasurer,
-  useWriteFundPoolRegisterTreasurer,
-} from "@/hooks/generated-contracts/fund-pool";
-import { ConnectKitButton } from "connectkit";
+import { useWriteFundPoolRegisterTreasurer } from "@/hooks/generated-contracts/fund-pool";
+import { usePrivy } from "@privy-io/react-auth";
+import { useRouter } from "next/navigation";
 import { useAccount, useBalance, useConnect } from "wagmi";
 import { useCheckIfTreasurer } from "../utils/custom-contracts-calls";
-import { useRouter } from "next/navigation";
 
 export default function FunderRegistration() {
   const register = useWriteFundPoolRegisterTreasurer({
@@ -84,32 +79,35 @@ export default function FunderRegistration() {
     balance.data >= 0 &&
     balance.data <= AMOUNT_TO_STAKE;
 
-  if (isTreasurer.data) {
-    return (
-      <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white flex items-center justify-center p-4'>
-        <Card className='w-full max-w-md'>
-          <CardHeader>
-            <CardTitle className='text-2xl font-bold text-center'>
-              Funder Registration
-            </CardTitle>
-            <CardDescription className='text-center'>
-              Join our Web3 funding community
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className='text-center text-blue-700'>
-              You are already a funder
-            </p>
-          </CardContent>
-          <CardFooter>
-            <Button className='w-full' onClick={() => router.push("/")}>
-              Go to home page
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-    );
-  }
+  const { ready, authenticated, login, logout } = usePrivy();
+  const disableLogin = false; //!ready || (ready && authenticated);
+
+  // if (isTreasurer.data) {
+  //   return (
+  //     <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white flex items-center justify-center p-4'>
+  //       <Card className='w-full max-w-md'>
+  //         <CardHeader>
+  //           <CardTitle className='text-2xl font-bold text-center'>
+  //             Funder Registration
+  //           </CardTitle>
+  //           <CardDescription className='text-center'>
+  //             Join our Web3 funding community
+  //           </CardDescription>
+  //         </CardHeader>
+  //         <CardContent>
+  //           <p className='text-center text-blue-700'>
+  //             You are already a funder
+  //           </p>
+  //         </CardContent>
+  //         <CardFooter>
+  //           <Button className='w-full' onClick={() => router.push("/")}>
+  //             Go to home page
+  //           </Button>
+  //         </CardFooter>
+  //       </Card>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className='min-h-screen bg-gradient-to-b from-blue-100 to-white flex items-center justify-center p-4'>
@@ -127,7 +125,25 @@ export default function FunderRegistration() {
             <div className='space-y-2'>
               <Label htmlFor='wallet'>Wallet Connection</Label>
 
-              <ConnectKitButton />
+              {/* <ConnectKitButton /> */}
+              {!authenticated ? (
+                <Button
+                  disabled={disableLogin}
+                  className='w-full'
+                  variant={"outline"}
+                  onClick={login}>
+                  Connect Wallet
+                </Button>
+              ) : (
+                <Button
+                  className='w-full'
+                  variant={"outline"}
+                  onClick={() => {
+                    logout();
+                  }}>
+                  Disconnect Wallet
+                </Button>
+              )}
             </div>
 
             <div className='space-y-2'>
